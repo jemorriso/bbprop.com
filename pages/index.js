@@ -23,14 +23,9 @@ function buildTableColumns(columnElements) {
 }
 
 function buildTableData(data) {
-  return data;
+  // return data;
+  return data.slice(0, 100);
 }
-
-// Doesn't work because it's a React Hook
-// function memoize(data) {
-//   const memoized = React.useMemo(() => data, []);
-//   return memoized;
-// }
 
 function cleanTableData(data) {
   const headers = getHeadersFromRecords(data);
