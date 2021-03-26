@@ -50,11 +50,6 @@ export default function Table({ columns, data }) {
         value={filterInput}
         onChange={handleFilterChange}
       />
-      {/* <input
-        value={filterInput}
-        onChange={handleFilterChange}
-        placeholder={'Search name'}
-      /> */}
       <MaUTable {...getTableProps()}>
         <TableHead>
           {headerGroups.map((headerGroup) => (
@@ -69,8 +64,6 @@ export default function Table({ columns, data }) {
                   >
                     {column.render('Header')}
                   </TableSortLabel>
-                  {/* <span>foo</span> */}
-                  {/* {column.render('Header')} */}
                 </TableCell>
               ))}
             </TableRow>
