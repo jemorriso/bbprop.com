@@ -1,23 +1,45 @@
 import React, { useState } from 'react';
-import { useTable, useSortBy, useGlobalFilter } from 'react-table';
+import {
+  useTable,
+  useSortBy,
+  useGlobalFilter,
+  usePagination,
+} from 'react-table';
+import TextField from '@material-ui/core/TextField';
 import MaUTable from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import TextField from '@material-ui/core/TextField';
+import TablePagination from '@material-ui/core/TablePagination';
 
 export default function Table({ columns, data }) {
   const [filterInput, setFilterInput] = useState('');
+  const [pageNumber, setPageNumber] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+
+    // rows,
+    page,
     prepareRow,
+
     setGlobalFilter,
+
+    // The rest of these things are super handy, too ;)
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
@@ -25,13 +47,30 @@ export default function Table({ columns, data }) {
       disableSortRemove: true,
     },
     useGlobalFilter,
-    useSortBy
+    useSortBy,
+    usePagination
   );
 
   const handleFilterChange = (e) => {
     const value = e.target.value || undefined;
     setGlobalFilter(value);
     setFilterInput(value);
+  };
+
+  const handleChangePage = (e, newPageNumber) => {
+    // console.log(newPageNumber);
+    // Material UI
+    setPageNumber(newPageNumber);
+    // React-Table
+    gotoPage(newPageNumber);
+  };
+
+  const handleChangeRowsPerPage = (e) => {
+    // Material UI
+    setRowsPerPage(parseInt(e.target.value, 10));
+    setPageNumber(0);
+    // React-Table
+    setPageSize(parseInt(e.target.value, 10));
   };
 
   return (
@@ -70,7 +109,7 @@ export default function Table({ columns, data }) {
           ))}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
-          {rows.map((row) => {
+          {page.map((row) => {
             prepareRow(row);
             return (
               <TableRow {...row.getRowProps()}>
@@ -86,6 +125,15 @@ export default function Table({ columns, data }) {
           })}
         </TableBody>
       </MaUTable>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={pageNumber}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </>
   );
 }

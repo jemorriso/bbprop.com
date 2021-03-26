@@ -50,8 +50,8 @@ function buildTableData(data) {
       el[k] = Number(el[k]).toFixed(3);
     });
   });
-  // return data;
-  return data.slice(0, 100);
+  return data;
+  // return data.slice(0, 100);
 }
 
 function cleanTableData(data) {
