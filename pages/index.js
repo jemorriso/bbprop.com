@@ -47,8 +47,9 @@ function buildTableData(data) {
     el['market'] = el['market'].replaceAll(/\]|\[/gi, '');
     el['market'] = el['market'].replaceAll(/\'/gi, '');
     roundedKeys.forEach((k) => {
-      el[k] = Number(el[k]).toFixed(3);
+      el[k] = Number(Number(el[k]).toFixed(3));
     });
+    el['line'] = Number(el['line']);
   });
   return data;
   // return data.slice(0, 100);

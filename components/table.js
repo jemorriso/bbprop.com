@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+// https://blog.logrocket.com/complete-guide-building-smart-data-table-react/
+
+import React, { useState, useMemo } from 'react';
 import {
   useTable,
   useSortBy,
@@ -23,28 +25,30 @@ export default function Table({ columns, data }) {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-
-    // rows,
-    page,
     prepareRow,
 
-    setGlobalFilter,
-
-    // The rest of these things are super handy, too ;)
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
+    page,
     gotoPage,
-    nextPage,
-    previousPage,
     setPageSize,
-    state: { pageIndex, pageSize },
+
+    setGlobalFilter,
   } = useTable(
     {
       columns,
       data,
       disableSortRemove: true,
+      // sortType: 'basic',
+      sortTypes: {
+        // https://github.com/tannerlinsley/react-table/issues/1469
+        // 'basic' sort type doesn't work for negative numbers. Couldn't get
+        // this to work using a function defined elsewhere for some reason.
+        numeric: (a, b, id) => {
+          if (a.original[id] < b.original[id]) return 1;
+          if (a.original[id] > b.original[id]) return -1;
+          return 0;
+          // console.log(a, b, id);
+        },
+      },
     },
     useGlobalFilter,
     useSortBy,
@@ -73,6 +77,13 @@ export default function Table({ columns, data }) {
     setPageSize(parseInt(e.target.value, 10));
   };
 
+  // const numberSort = useMemo((a, b, id, desc) => {
+  //   if (a[id] < b[id]) return 1;
+  //   if (a[id] > b[id]) return -1;
+  //   return 0;
+  //   // return a < b ? -1 : 1;
+  // });
+
   return (
     <>
       <TextField
@@ -93,18 +104,23 @@ export default function Table({ columns, data }) {
         <TableHead>
           {headerGroups.map((headerGroup) => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <TableCell
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                >
-                  <TableSortLabel
-                    active={column.isSorted}
-                    direction={column.isSortedDesc ? 'asc' : 'desc'}
+              {headerGroup.headers.map((column) => {
+                // if (column.id == 'line') column.sortMethod = numberSort;
+                if (['line', 'true', 'implied', 'edge'].includes(column.id))
+                  column.sortType = 'numeric';
+                return (
+                  <TableCell
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
                   >
-                    {column.render('Header')}
-                  </TableSortLabel>
-                </TableCell>
-              ))}
+                    <TableSortLabel
+                      active={column.isSorted}
+                      direction={column.isSortedDesc ? 'desc' : 'asc'}
+                    >
+                      {column.render('Header')}
+                    </TableSortLabel>
+                  </TableCell>
+                );
+              })}
             </TableRow>
           ))}
         </TableHead>
