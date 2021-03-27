@@ -44,8 +44,8 @@ function customSortKeys(sortedKeys, data) {
 function buildTableData(data) {
   const roundedKeys = ['avg', 'std', 'true', 'implied', 'edge'];
   data.forEach((el) => {
-    el['market'] = el['market'].replaceAll(/\]|\[/gi, '');
-    el['market'] = el['market'].replaceAll(/\'/gi, '');
+    el['market'] = el['market'].replace(/\]|\[/g, '');
+    el['market'] = el['market'].replace(/\'/g, '');
     roundedKeys.forEach((k) => {
       el[k] = Number(Number(el[k]).toFixed(3));
     });

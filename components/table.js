@@ -77,13 +77,6 @@ export default function Table({ columns, data }) {
     setPageSize(parseInt(e.target.value, 10));
   };
 
-  // const numberSort = useMemo((a, b, id, desc) => {
-  //   if (a[id] < b[id]) return 1;
-  //   if (a[id] > b[id]) return -1;
-  //   return 0;
-  //   // return a < b ? -1 : 1;
-  // });
-
   return (
     <>
       <TextField
